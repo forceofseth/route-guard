@@ -1,25 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import Protected from './Protected';
+import Unprotected from './Unprotected';
+import Home from './Home';
+import GuardedRoute from './GuardedRoute';
 
 function App() {
+  const[isAutheticated, setisAutheticated] = useState(false);
+
+  function login(){
+    setisAutheticated(true);
+    console.log("loggedInUser:" + isAutheticated)
+  }
+
+  function logout(){
+    setisAutheticated(false);
+    console.log("loggedInUser:" + isAutheticated)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <ul>
+          <li>
+            <Link to='/'>
+              Link to Home Page
+          </Link>
+          </li>
+          <li>
+            <Link to='/protected'>
+              Link to Protected Page
+          </Link>
+          </li>
+          <li>
+            <Link to='/unprotected'>
+              Link to Unprotected Page
+          </Link>
+          </li>
+        </ul>
+        <button onClick={login}>Login</button>
+        <br/>
+        <button onClick={logout}>Logout</button>
+      </div>
+      <Switch>
+        <Route exact path='/' component={Home}/>
+        <GuardedRoute path='/protected' component={Protected} auth={isAutheticated} />
+        <Route path='/unprotected' component={Unprotected} />
+      </Switch>
+    </Router>
+
   );
 }
 
